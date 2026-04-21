@@ -32,4 +32,7 @@ public class Rental {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private RentalStatus status;
+
+
+
 }

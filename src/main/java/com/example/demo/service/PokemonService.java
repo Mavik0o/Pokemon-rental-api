@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.enums.PokemonStatus;
+import com.example.demo.exceptions.PokemonNotFoundException;
 import com.example.demo.models.Pokemon;
 import com.example.demo.repository.PokemonRepository;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,17 @@ public class PokemonService {
     public Pokemon findById(Long id) {
         return this.pokemonRepository.findById(id).orElse(null);
     }
+
+    public boolean existsByIdAndStatus(Long id, PokemonStatus status) {
+        return this.pokemonRepository.findByIdAndStatus(id, status) != null;
+    }
+
+    public Pokemon updatePokemonStatus(Long id, PokemonStatus status) {
+        Pokemon pokemon = this.pokemonRepository.findById(id).orElseThrow(() -> new PokemonNotFoundException(id));
+        pokemon.setStatus(status);
+        return this.pokemonRepository.save(pokemon);
+    }
+
 
     public Pokemon create(Pokemon pokemon) {
         return this.pokemonRepository.save(pokemon);

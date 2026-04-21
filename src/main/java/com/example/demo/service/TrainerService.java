@@ -23,6 +23,10 @@ public class TrainerService {
         return this.trainerRepository.findById(id).orElse(null);
     }
 
+    public boolean findByIdAndNumberOfRentals(@PathVariable Long id, int numberOfRentals) {
+        return this.trainerRepository.findByIdAndNumberOfRentals(id, numberOfRentals) != null;
+    }
+
     public Trainer create(Trainer trainer) {
         return this.trainerRepository.save(trainer);
     }
