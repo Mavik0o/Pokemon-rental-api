@@ -1,5 +1,7 @@
 package com.example.demo.controllers;
 
+import com.example.demo.dto.pokemon.PokemonFilter;
+import com.example.demo.enums.PokemonStatus;
 import com.example.demo.models.Pokemon;
 import com.example.demo.service.PokemonService;
 import org.springframework.web.bind.annotation.*;
@@ -16,8 +18,8 @@ public class PokemonController {
     }
 
     @GetMapping
-    public List<Pokemon> findAll() {
-        return this.pokemonService.findAll();
+    public List<Pokemon> findAll(PokemonFilter filter) {
+        return pokemonService.findAll(filter);
     }
 
     @GetMapping("/{id}")

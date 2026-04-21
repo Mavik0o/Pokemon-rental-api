@@ -1,9 +1,12 @@
 package com.example.demo.service;
 
+import com.example.demo.dto.pokemon.PokemonFilter;
+import com.example.demo.dto.pokemon.PokemonSpecifications;
 import com.example.demo.enums.PokemonStatus;
 import com.example.demo.exceptions.PokemonNotFoundException;
 import com.example.demo.models.Pokemon;
 import com.example.demo.repository.PokemonRepository;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,6 +23,19 @@ public class PokemonService {
         return this.pokemonRepository.findAll();
     }
 
+    public List<Pokemon> findAll(PokemonFilter filter) {
+        Specification<Pokemon> spec = Specification
+                .where(PokemonSpecifications.searchByName(filter.name()))
+                .and(PokemonSpecifications.searchByType(filter.type()))
+                .and(PokemonSpecifications.hasLevelGreaterThanOrEqual(filter.minLevel()))
+                .and(PokemonSpecifications.hasLevelLessThanOrEqual(filter.maxLevel()))
+                .and(PokemonSpecifications.hasHpGreaterThanOrEqual(filter.minHp()))
+                .and(PokemonSpecifications.hasHpLessThanOrEqual(filter.maxHp()))
+                .and(PokemonSpecifications.searchByStatus(filter.status()))
+                .and(PokemonSpecifications.searchById(filter.id()));
+        return pokemonRepository.findAll(spec);
+    }
+
     public Pokemon findById(Long id) {
         return this.pokemonRepository.findById(id).orElse(null);
     }
@@ -27,6 +43,7 @@ public class PokemonService {
     public boolean existsByIdAndStatus(Long id, PokemonStatus status) {
         return this.pokemonRepository.findByIdAndStatus(id, status) != null;
     }
+
 
     public Pokemon updatePokemonStatus(Long id, PokemonStatus status) {
         Pokemon pokemon = this.pokemonRepository.findById(id).orElseThrow(() -> new PokemonNotFoundException(id));

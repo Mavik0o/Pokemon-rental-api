@@ -22,10 +22,7 @@ public class RentalController {
         return this.rentingService.findAll();
     }
 
-    @GetMapping
-    public String hello(@RequestParam(value = "name", defaultValue = "World") PokemonStatus status) {
-        return this.rentingService.findById(status);
-    }
+
 
 
     @PostMapping
