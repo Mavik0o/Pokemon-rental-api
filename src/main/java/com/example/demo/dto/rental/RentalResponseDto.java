@@ -1,4 +1,4 @@
-package com.example.demo.dto;
+package com.example.demo.dto.rental;
 
 import com.example.demo.enums.RentalStatus;
 

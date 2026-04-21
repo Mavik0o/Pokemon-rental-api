@@ -1,4 +1,4 @@
-package com.example.demo.dto;
+package com.example.demo.dto.trainer;
 
 public record TrainerResponseDto(
         Long id,
