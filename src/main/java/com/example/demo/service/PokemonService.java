@@ -37,7 +37,7 @@ public class PokemonService {
 
     public void delete(Long id) {
         Pokemon pokemon = this.findById(id);
-        if(pokemon.getStatus() == PokemonStatus.RENTED) {
+        if (pokemon.getStatus() == PokemonStatus.RENTED) {
             throw new IllegalStateException("Ten pokemon jest wypozyczony, nie wolno go usunac");
         }
         this.pokemonRepository.delete(pokemon);

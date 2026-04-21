@@ -1,5 +1,12 @@
 package com.example.demo.repository;
 
-public interface TrainerRepository {
+import com.example.demo.models.Trainer;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.Optional;
+
+public interface TrainerRepository extends JpaRepository<Trainer, Long> {
+    Optional<Trainer> findByNameIgnoreCase(String lastName);
+
 
 }

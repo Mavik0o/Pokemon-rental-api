@@ -2,6 +2,8 @@ package com.example.demo.models;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.NotBlank;
 
 @Entity
 @Table(name = "Trainer")
@@ -18,5 +20,7 @@ public class Trainer {
     private String lastName;
 
     @Column(nullable = false, unique = true)
+    @NotBlank
+    @Email
     private String email;
 }
