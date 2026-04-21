@@ -1,5 +1,6 @@
 package com.example.demo.models;
 
+import com.example.demo.enums.PokemonStatus;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -11,7 +12,16 @@ public class Renting {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Collumn(nullable = false)
-    private
+
+
+    @Column(nullable = false)
+    private String rentedAt;
+
+    @Column(nullable = false)
+    private String returnedAt;
+
+    @Column(nullable = false)
+    private PokemonStatus status;
+
 
 }
