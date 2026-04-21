@@ -4,18 +4,18 @@ import com.example.demo.enums.PokemonStatus;
 import com.example.demo.enums.RentalStatus;
 import com.example.demo.models.Rental;
 import com.example.demo.repository.RentalRepository;
-import com.example.demo.repository.TrainerRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
 @Service
-public class RentingService {
+public class RentalService {
     private final RentalRepository rentalRepository;
     private final TrainerService trainerService;
     private final PokemonService pokemonService;
-    public RentingService(RentalRepository rentalRepository, TrainerService trainerService, PokemonService pokemonService) {
+
+    public RentalService(RentalRepository rentalRepository, TrainerService trainerService, PokemonService pokemonService) {
         this.rentalRepository = rentalRepository;
         this.trainerService = trainerService;
         this.pokemonService = pokemonService;
@@ -34,14 +34,12 @@ public class RentingService {
     public Rental create(Rental rental) {
         boolean trainerExistsAndHasThreeOrLessRentalsActive = trainerService.findByIdAndNumberOfRentals(rental.getTrainer().getId(), 3);
         boolean activePokemonExists = pokemonService.existsByIdAndStatus(rental.getPokemon().getId(), PokemonStatus.AVAILABLE);
-        if(trainerExistsAndHasThreeOrLessRentalsActive && activePokemonExists) {
+        if (trainerExistsAndHasThreeOrLessRentalsActive && activePokemonExists) {
             pokemonService.updatePokemonStatus(rental.getPokemon().getId(), PokemonStatus.RENTED);
             return this.rentalRepository.save(rental);
         }
         throw new RuntimeException("Rental creation not available");
     }
-
-
 
 
     public Rental update(Long id, Rental rental) {

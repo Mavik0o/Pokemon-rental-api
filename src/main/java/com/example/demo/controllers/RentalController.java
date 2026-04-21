@@ -1,25 +1,24 @@
 package com.example.demo.controllers;
 
 
-import com.example.demo.enums.PokemonStatus;
 import com.example.demo.models.Rental;
-import com.example.demo.service.RentingService;
+import com.example.demo.service.RentalService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/Renting")
+@RequestMapping(value = "/api/Renting")
 public class RentalController {
-    private final RentingService rentingService;
+    private final RentalService rentalService;
 
-    public RentalController(RentingService rentingService) {
-        this.rentingService = rentingService;
+    public RentalController(RentalService rentalService) {
+        this.rentalService = rentalService;
     }
 
     @GetMapping
     public List<Rental> findAll() {
-        return this.rentingService.findAll();
+        return this.rentalService.findAll();
     }
 
 
@@ -27,7 +26,7 @@ public class RentalController {
 
     @PostMapping
     public Rental create(@RequestBody Rental rental) {
-        return this.rentingService.create(rental);
+        return this.rentalService.create(rental);
     }
 
 

@@ -2,7 +2,6 @@ package com.example.demo.repository;
 
 import com.example.demo.enums.PokemonStatus;
 import com.example.demo.models.Pokemon;
-import jakarta.validation.constraints.NotNull;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 

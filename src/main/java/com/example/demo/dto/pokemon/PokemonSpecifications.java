@@ -50,6 +50,6 @@ public class PokemonSpecifications {
     public static Specification<Pokemon> searchById(Long id) {
         final Long idValue = id;
         return ((root, query, criteriaBuilder) ->
-                idValue == null ? null : criteriaBuilder.lessThanOrEqualTo(root.get("id"), idValue));
+                idValue == null ? null : criteriaBuilder.equal(root.get("id"), idValue));
     }
 }

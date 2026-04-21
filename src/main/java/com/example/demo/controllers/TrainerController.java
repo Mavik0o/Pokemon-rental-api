@@ -1,40 +1,49 @@
 package com.example.demo.controllers;
 
-import com.example.demo.models.Trainer;
+import com.example.demo.dto.trainer.TrainerRequestDto;
+import com.example.demo.dto.trainer.TrainerResponseDto;
 import com.example.demo.service.TrainerService;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/trainers")
+@RequestMapping("/api/trainers")
 public class TrainerController {
+
     private final TrainerService trainerService;
+
     public TrainerController(TrainerService trainerService) {
         this.trainerService = trainerService;
     }
 
     @GetMapping
-    public List<Trainer> findAll() {
-        return this.trainerService.findAll();
+    public List<TrainerResponseDto> findAll() {
+        return trainerService.findAll();
     }
+
     @GetMapping("/{id}")
-    public Trainer getById(@PathVariable Long id) {
-        return this.trainerService.findById(id);
+    public TrainerResponseDto getById(@PathVariable Long id) {
+        return trainerService.findById(id);
     }
 
     @PostMapping
-    public Trainer create(@RequestBody Trainer trainer) {
-        return this.trainerService.create(trainer);
+    @ResponseStatus(HttpStatus.CREATED)
+    public TrainerResponseDto create(@RequestBody @Valid TrainerRequestDto requestDto) {
+        return trainerService.create(requestDto);
     }
 
     @PutMapping("/{id}")
-    public Trainer update(@PathVariable Long id, @RequestBody Trainer trainer) {
-        return this.trainerService.update(id, trainer);
+    public TrainerResponseDto update(@PathVariable Long id,
+                                     @RequestBody @Valid TrainerRequestDto requestDto) {
+        return trainerService.update(id, requestDto);
     }
 
     @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {
-        this.trainerService.delete(id);
+        trainerService.delete(id);
     }
 }

@@ -1,49 +1,99 @@
 package com.example.demo.service;
 
+import com.example.demo.dto.trainer.TrainerRequestDto;
+import com.example.demo.dto.trainer.TrainerResponseDto;
+import com.example.demo.enums.RentalStatus;
+import com.example.demo.exceptions.DuplicateTrainerEmailException;
+import com.example.demo.exceptions.TrainerNotFoundException;
+import com.example.demo.exceptions.TrainerWithActiveRentalDeleteException;
 import com.example.demo.models.Trainer;
+import com.example.demo.repository.RentalRepository;
 import com.example.demo.repository.TrainerRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
 @Service
 public class TrainerService {
+
     private final TrainerRepository trainerRepository;
+    private final RentalRepository rentalRepository;
 
-    public TrainerService(TrainerRepository trainerRepository) {
+    public TrainerService(TrainerRepository trainerRepository, RentalRepository rentalRepository) {
         this.trainerRepository = trainerRepository;
+        this.rentalRepository = rentalRepository;
     }
 
-    public List<Trainer> findAll() {
-        return this.trainerRepository.findAll();
+    public List<TrainerResponseDto> findAll() {
+        return trainerRepository.findAll()
+                .stream()
+                .map(this::mapToDto)
+                .toList();
     }
 
-    public Trainer findById(@PathVariable Long id) {
-        return this.trainerRepository.findById(id).orElse(null);
+    public TrainerResponseDto findById(Long id) {
+        Trainer trainer = getTrainerEntityById(id);
+        return mapToDto(trainer);
     }
 
-    public boolean findByIdAndNumberOfRentals(@PathVariable Long id, int numberOfRentals) {
-        return this.trainerRepository.findByIdAndNumberOfRentals(id, numberOfRentals) != null;
+    public TrainerResponseDto create(TrainerRequestDto requestDto) {
+        if (trainerRepository.existsByEmailIgnoreCase(requestDto.email())) {
+            throw new DuplicateTrainerEmailException(requestDto.email());
+        }
+
+        Trainer trainer = new Trainer();
+        trainer.setFirstName(requestDto.firstName());
+        trainer.setLastName(requestDto.lastName());
+        trainer.setEmail(requestDto.email());
+
+        trainer = trainerRepository.save(trainer);
+        return mapToDto(trainer);
     }
 
-    public Trainer create(Trainer trainer) {
-        return this.trainerRepository.save(trainer);
+    public TrainerResponseDto update(Long id, TrainerRequestDto requestDto) {
+        Trainer trainer = getTrainerEntityById(id);
+
+        boolean duplicateEmailExists = trainerRepository.findByEmailIgnoreCase(requestDto.email())
+                .map(foundTrainer -> !foundTrainer.getId().equals(id))
+                .orElse(false);
+
+        if (duplicateEmailExists) {
+            throw new DuplicateTrainerEmailException(requestDto.email());
+        }
+
+        trainer.setFirstName(requestDto.firstName());
+        trainer.setLastName(requestDto.lastName());
+        trainer.setEmail(requestDto.email());
+
+        trainer = trainerRepository.save(trainer);
+        return mapToDto(trainer);
     }
 
-    public Trainer update(Long id, Trainer trainer) {
-        Trainer trainer1 = this.trainerRepository.findById(id).orElse(null);
-        trainer1.setFirstName(trainer.getFirstName());
-        trainer1.setLastName(trainer.getLastName());
-        trainer1.setEmail(trainer.getEmail());
+    public void delete(Long id) {
+        Trainer trainer = getTrainerEntityById(id);
 
-        return this.trainerRepository.save(trainer);
+        boolean hasActiveRentals = rentalRepository.existsByTrainerIdAndStatus(id, RentalStatus.ACTIVE);
+
+        if (hasActiveRentals) {
+            throw new TrainerWithActiveRentalDeleteException(
+                    "Nie można usunąć trenera z aktywnym wypożyczeniem"
+            );
+        }
+
+        trainerRepository.delete(trainer);
     }
 
-    public void delete(@PathVariable Long id) {
-        Trainer trainer = this.trainerRepository.findById(id).orElse(null);
-
-        this.trainerRepository.delete(trainer);
+    public Trainer getTrainerEntityById(Long id) {
+        return trainerRepository.findById(id)
+                .orElseThrow(() -> new TrainerNotFoundException(id));
     }
 
+    private TrainerResponseDto mapToDto(Trainer trainer) {
+        return new TrainerResponseDto(
+                trainer.getId(),
+                trainer.getFirstName(),
+                trainer.getLastName(),
+                trainer.getEmail()
+        );
+    }
 }
