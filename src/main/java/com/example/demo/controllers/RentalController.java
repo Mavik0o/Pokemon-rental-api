@@ -10,10 +10,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/Renting")
-public class RentingController {
+public class RentalController {
     private final RentingService rentingService;
 
-    public RentingController(RentingService rentingService) {
+    public RentalController(RentingService rentingService) {
         this.rentingService = rentingService;
     }
 
