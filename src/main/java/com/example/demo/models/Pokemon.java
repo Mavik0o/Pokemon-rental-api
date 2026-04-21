@@ -2,36 +2,38 @@ package com.example.demo.models;
 
 import com.example.demo.enums.PokemonStatus;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-
 @Entity
-@Table(name = "Pokemon")
+@Table(name = "pokemons")
 @Data
 public class Pokemon {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank
     @Column(nullable = false, unique = true)
     private String name;
 
+    @NotBlank
     @Column(nullable = false)
     private String type;
 
+    @Min(1)
+    @Max(100)
     @Column(nullable = false)
-    @Min(value = 1)
-    @Max(value = 100)
     private int level;
 
+    @Min(1)
     @Column(nullable = false)
-    @Min(value = 1)
     private int hp;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private PokemonStatus status;
-
-
 }

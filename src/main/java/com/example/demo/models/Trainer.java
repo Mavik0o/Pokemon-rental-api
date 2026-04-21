@@ -1,26 +1,29 @@
 package com.example.demo.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
-import org.hibernate.validator.constraints.Email;
-import org.hibernate.validator.constraints.NotBlank;
 
 @Entity
-@Table(name = "Trainer")
+@Table(name = "trainers")
 @Data
 public class Trainer {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @NotBlank
+    @Column(nullable = false)
     private String firstName;
 
+    @NotBlank
     @Column(nullable = false)
     private String lastName;
 
-    @Column(nullable = false, unique = true)
     @NotBlank
     @Email
+    @Column(nullable = false, unique = true)
     private String email;
 }
