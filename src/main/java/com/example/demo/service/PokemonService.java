@@ -1,9 +1,11 @@
 package com.example.demo.service;
 
-import com.example.demo.dto.pokemon.PokemonFilter;
+import com.example.demo.exceptions.PokemonAlreadyRentedException;
+import com.example.demo.filter.PokemonFilter;
 import com.example.demo.dto.pokemon.PokemonRequestDto;
 import com.example.demo.dto.pokemon.PokemonResponseDto;
-import com.example.demo.dto.pokemon.PokemonSpecifications;
+import com.example.demo.mappers.PokemonMapper;
+import com.example.demo.specification.PokemonSpecifications;
 import com.example.demo.enums.PokemonStatus;
 import com.example.demo.exceptions.DuplicatePokemonNameException;
 import com.example.demo.exceptions.PokemonNotFoundException;
@@ -18,9 +20,10 @@ import java.util.List;
 @Service
 public class PokemonService {
     private final PokemonRepository pokemonRepository;
-
-    public PokemonService(PokemonRepository pokemonRepository) {
+    private final PokemonMapper pokemonMapper;
+    public PokemonService(PokemonRepository pokemonRepository, PokemonMapper pokemonMapper) {
         this.pokemonRepository = pokemonRepository;
+        this.pokemonMapper = pokemonMapper;
     }
 
     public List<PokemonResponseDto> findAll(PokemonFilter filter) {
@@ -36,7 +39,7 @@ public class PokemonService {
 
         return pokemonRepository.findAll(spec)
                 .stream()
-                .map(this::mapToDto)
+                .map(pokemonMapper::toDto)
                 .toList();
     }
 
@@ -44,11 +47,7 @@ public class PokemonService {
         Pokemon pokemon = pokemonRepository.findById(id)
                 .orElseThrow(() -> new PokemonNotFoundException(id));
 
-        return mapToDto(pokemon);
-    }
-
-    public boolean existsByIdAndStatus(Long id, PokemonStatus status) {
-        return !pokemonRepository.findByIdAndStatus(id, status).isEmpty();
+        return pokemonMapper.toDto(pokemon);
     }
 
     public Pokemon updatePokemonStatus(Long id, PokemonStatus status) {
@@ -63,16 +62,10 @@ public class PokemonService {
         if (pokemonRepository.findByNameIgnoreCase(requestDto.name()).isPresent()) {
             throw new DuplicatePokemonNameException(requestDto.name());
         }
-
-        Pokemon pokemon = new Pokemon();
-        pokemon.setName(requestDto.name());
-        pokemon.setType(requestDto.type());
-        pokemon.setHp(requestDto.hp());
-        pokemon.setLevel(requestDto.level());
-        pokemon.setStatus(PokemonStatus.AVAILABLE);
+        Pokemon pokemon = pokemonMapper.toEntity(requestDto);
 
         pokemon = pokemonRepository.save(pokemon);
-        return mapToDto(pokemon);
+        return pokemonMapper.toDto(pokemon);
     }
 
     public PokemonResponseDto update(Long id, PokemonRequestDto requestDto) {
@@ -93,7 +86,7 @@ public class PokemonService {
         pokemon.setHp(requestDto.hp());
 
         pokemon = pokemonRepository.save(pokemon);
-        return mapToDto(pokemon);
+        return pokemonMapper.toDto(pokemon);
     }
 
     public void delete(Long id) {
@@ -101,7 +94,7 @@ public class PokemonService {
                 .orElseThrow(() -> new PokemonNotFoundException(id));
 
         if (pokemon.getStatus() == PokemonStatus.RENTED) {
-            throw new IllegalStateException("Ten pokemon jest wypożyczony, nie wolno go usunąć");
+            throw new PokemonAlreadyRentedException(pokemon.getId());
         }
 
         pokemonRepository.delete(pokemon);
@@ -118,7 +111,7 @@ public class PokemonService {
         pokemon.setStatus(PokemonStatus.AVAILABLE);
         pokemon = pokemonRepository.save(pokemon);
 
-        return mapToDto(pokemon);
+        return pokemonMapper.toDto(pokemon);
     }
 
     public Pokemon getPokemonEntityById(Long id) {
@@ -126,14 +119,4 @@ public class PokemonService {
                 .orElseThrow(() -> new PokemonNotFoundException(id));
     }
 
-    private PokemonResponseDto mapToDto(Pokemon pokemon) {
-        return new PokemonResponseDto(
-                pokemon.getId(),
-                pokemon.getName(),
-                pokemon.getType(),
-                pokemon.getLevel(),
-                pokemon.getHp(),
-                pokemon.getStatus()
-        );
-    }
 }

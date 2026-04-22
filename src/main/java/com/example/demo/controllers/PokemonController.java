@@ -1,6 +1,6 @@
 package com.example.demo.controllers;
 
-import com.example.demo.dto.pokemon.PokemonFilter;
+import com.example.demo.filter.PokemonFilter;
 import com.example.demo.dto.pokemon.PokemonRequestDto;
 import com.example.demo.dto.pokemon.PokemonResponseDto;
 import com.example.demo.service.PokemonService;
@@ -21,7 +21,7 @@ public class PokemonController {
     }
 
     @GetMapping
-    public List<PokemonResponseDto> findAll(PokemonFilter filter) {
+    public List<PokemonResponseDto> findAll(@Valid PokemonFilter filter) {
         return pokemonService.findAll(filter);
     }
 

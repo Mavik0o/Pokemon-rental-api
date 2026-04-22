@@ -1,4 +1,4 @@
-package com.example.demo.dto.pokemon;
+package com.example.demo.specification;
 
 import com.example.demo.enums.PokemonStatus;
 import com.example.demo.models.Pokemon;

@@ -1,4 +1,4 @@
-package com.example.demo.dto.pokemon;
+package com.example.demo.filter;
 
 import com.example.demo.enums.PokemonStatus;
 

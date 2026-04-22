@@ -6,6 +6,7 @@ import com.example.demo.enums.RentalStatus;
 import com.example.demo.exceptions.DuplicateTrainerEmailException;
 import com.example.demo.exceptions.TrainerNotFoundException;
 import com.example.demo.exceptions.TrainerWithActiveRentalDeleteException;
+import com.example.demo.mappers.TrainerMapper;
 import com.example.demo.models.Trainer;
 import com.example.demo.repository.RentalRepository;
 import com.example.demo.repository.TrainerRepository;
@@ -18,22 +19,24 @@ public class TrainerService {
 
     private final TrainerRepository trainerRepository;
     private final RentalRepository rentalRepository;
+    private final TrainerMapper trainerMapper;
 
-    public TrainerService(TrainerRepository trainerRepository, RentalRepository rentalRepository) {
+    public TrainerService(TrainerRepository trainerRepository, RentalRepository rentalRepository, TrainerMapper trainerMapper) {
         this.trainerRepository = trainerRepository;
         this.rentalRepository = rentalRepository;
+        this.trainerMapper = trainerMapper;
     }
 
     public List<TrainerResponseDto> findAll() {
         return trainerRepository.findAll()
                 .stream()
-                .map(this::mapToDto)
+                .map(trainerMapper::toDto)
                 .toList();
     }
 
     public TrainerResponseDto findById(Long id) {
         Trainer trainer = getTrainerEntityById(id);
-        return mapToDto(trainer);
+        return trainerMapper.toDto(trainer);
     }
 
     public TrainerResponseDto create(TrainerRequestDto requestDto) {
@@ -41,13 +44,10 @@ public class TrainerService {
             throw new DuplicateTrainerEmailException(requestDto.email());
         }
 
-        Trainer trainer = new Trainer();
-        trainer.setFirstName(requestDto.firstName());
-        trainer.setLastName(requestDto.lastName());
-        trainer.setEmail(requestDto.email());
+        Trainer trainer = trainerMapper.toEntity(requestDto);
 
         trainer = trainerRepository.save(trainer);
-        return mapToDto(trainer);
+        return trainerMapper.toDto(trainer);
     }
 
     public TrainerResponseDto update(Long id, TrainerRequestDto requestDto) {
@@ -66,7 +66,7 @@ public class TrainerService {
         trainer.setEmail(requestDto.email());
 
         trainer = trainerRepository.save(trainer);
-        return mapToDto(trainer);
+        return trainerMapper.toDto(trainer);
     }
 
     public void delete(Long id) {
@@ -88,12 +88,4 @@ public class TrainerService {
                 .orElseThrow(() -> new TrainerNotFoundException(id));
     }
 
-    private TrainerResponseDto mapToDto(Trainer trainer) {
-        return new TrainerResponseDto(
-                trainer.getId(),
-                trainer.getFirstName(),
-                trainer.getLastName(),
-                trainer.getEmail()
-        );
-    }
 }
