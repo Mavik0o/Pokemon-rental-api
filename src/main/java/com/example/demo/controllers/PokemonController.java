@@ -21,7 +21,7 @@ public class PokemonController {
     }
 
     @GetMapping
-    public List<PokemonResponseDto> findAll(@Valid PokemonFilter filter) {
+    public List<PokemonResponseDto> findAll(@Valid @ModelAttribute PokemonFilter filter) {
         return pokemonService.findAll(filter);
     }
 
