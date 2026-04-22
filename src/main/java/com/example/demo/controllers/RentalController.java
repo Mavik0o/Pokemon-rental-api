@@ -45,7 +45,7 @@ public class RentalController {
         return this.rentalService.create(requestDto);
     }
 
-    @PatchMapping("/return")
+    @PatchMapping("/{id}/return")
     public RentalResponseDto returnRental(@PathVariable Long id, @RequestBody @Valid ReturnRentalRequestDto requestDto) {
         return this.rentalService.returnRental(id, requestDto);
     }
