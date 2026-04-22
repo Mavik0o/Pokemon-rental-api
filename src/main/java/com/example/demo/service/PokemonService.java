@@ -121,6 +121,11 @@ public class PokemonService {
         return mapToDto(pokemon);
     }
 
+    public Pokemon getPokemonEntityById(Long id) {
+        return pokemonRepository.findById(id)
+                .orElseThrow(() -> new PokemonNotFoundException(id));
+    }
+
     private PokemonResponseDto mapToDto(Pokemon pokemon) {
         return new PokemonResponseDto(
                 pokemon.getId(),
