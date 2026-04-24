@@ -14,4 +14,6 @@ public interface RentalRepository extends JpaRepository<Rental, Long> {
     long countByTrainerIdAndStatus(Long trainerId, RentalStatus status);
 
     boolean existsByTrainerIdAndStatus(Long trainerId, RentalStatus status);
+
+    boolean existsByPokemonIdAndStatus(Long pokemonId, RentalStatus status);
 }

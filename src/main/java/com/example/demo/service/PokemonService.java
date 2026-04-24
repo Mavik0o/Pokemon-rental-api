@@ -7,11 +7,13 @@ import com.example.demo.dto.pokemon.PokemonResponseDto;
 import com.example.demo.mappers.PokemonMapper;
 import com.example.demo.specification.PokemonSpecifications;
 import com.example.demo.enums.PokemonStatus;
+import com.example.demo.enums.RentalStatus;
 import com.example.demo.exceptions.DuplicatePokemonNameException;
 import com.example.demo.exceptions.PokemonNotFoundException;
 import com.example.demo.exceptions.PokemonNotNeedingHealException;
 import com.example.demo.models.Pokemon;
 import com.example.demo.repository.PokemonRepository;
+import com.example.demo.repository.RentalRepository;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -20,9 +22,12 @@ import java.util.List;
 @Service
 public class PokemonService {
     private final PokemonRepository pokemonRepository;
+    private final RentalRepository rentalRepository;
     private final PokemonMapper pokemonMapper;
-    public PokemonService(PokemonRepository pokemonRepository, PokemonMapper pokemonMapper) {
+
+    public PokemonService(PokemonRepository pokemonRepository, RentalRepository rentalRepository, PokemonMapper pokemonMapper) {
         this.pokemonRepository = pokemonRepository;
+        this.rentalRepository = rentalRepository;
         this.pokemonMapper = pokemonMapper;
     }
 
@@ -93,7 +98,7 @@ public class PokemonService {
         Pokemon pokemon = pokemonRepository.findById(id)
                 .orElseThrow(() -> new PokemonNotFoundException(id));
 
-        if (pokemon.getStatus() == PokemonStatus.RENTED) {
+        if (rentalRepository.existsByPokemonIdAndStatus(id, RentalStatus.ACTIVE)) {
             throw new PokemonAlreadyRentedException(pokemon.getId());
         }
 

@@ -12,11 +12,13 @@ import com.example.demo.models.Rental;
 import com.example.demo.models.Trainer;
 import com.example.demo.repository.RentalRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
+@Transactional
 public class RentalService {
     private final RentalRepository rentalRepository;
     private final TrainerService trainerService;
@@ -38,6 +40,7 @@ public class RentalService {
     }
 
     public List<RentalResponseDto> findByTrainerId(Long trainerId) {
+        trainerService.getTrainerEntityById(trainerId);
         return rentalRepository.findByTrainerId(trainerId)
                 .stream()
                 .map(rentalMapper::toDto)
@@ -46,6 +49,7 @@ public class RentalService {
 
 
     public List<RentalResponseDto> findByPokemonId(Long pokemonId) {
+        pokemonService.getPokemonEntityById(pokemonId);
         return rentalRepository.findByPokemonId(pokemonId)
                 .stream()
                 .map(rentalMapper::toDto)
@@ -76,6 +80,8 @@ public class RentalService {
         }
 
         Rental rental = rentalMapper.toEntity(requestDto);
+        rental.setTrainer(trainer);
+        rental.setPokemon(pokemon);
 
         pokemonService.updatePokemonStatus(pokemon.getId(), PokemonStatus.RENTED);
 
