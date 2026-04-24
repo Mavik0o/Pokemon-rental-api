@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>org.example</groupId>
-    <artifactId>Pokemon-rental-api</artifactId>
+    <artifactId>pokemon-rental-api</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>Pokemon-rental-api</name>
-    <description>Pokemon-rental-api</description>
+    <name>pokemon-rental-api</name>
+    <description>pokemon-rental-api</description>
     <url/>
     <licenses>
         <license/>
