@@ -5,16 +5,16 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 
 public record PokemonRequestDto(
-        @NotBlank(message = "Nazwa Pokemona jest wymagana")
+        @NotBlank(message = "Pokemon name is required")
         String name,
 
-        @NotBlank(message = "Typ Pokemona jest wymagany")
+        @NotBlank(message = "Pokemon type is required")
         String type,
 
-        @Min(value = 1, message = "Level musi być co najmniej 1")
-        @Max(value = 100, message = "Level może być maksymalnie 100")
+        @Min(value = 1, message = "Level must be at least 1")
+        @Max(value = 100, message = "Level cannot be greater than 100")
         int level,
 
-        @Min(value = 1, message = "HP musi być większe od 0")
+        @Min(value = 1, message = "HP must be greater than 0")
         int hp
 ) {}

@@ -3,10 +3,10 @@ package com.example.demo.dto.rental;
 import jakarta.validation.constraints.NotNull;
 
 public record CreateRentalRequestDto(
-        @NotNull(message = "pokemonId jest wymagane")
+        @NotNull(message = "Pokemon selection is required")
         Long pokemonId,
 
-        @NotNull(message = "trainerId jest wymagane")
+        @NotNull(message = "Trainer selection is required")
         Long trainerId
 ) {
 }

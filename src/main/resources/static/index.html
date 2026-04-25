@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="pl">
+<html lang="en">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -8,35 +8,35 @@
 </head>
 <body>
 <div class="app-shell">
-    <aside class="sidebar" aria-label="Nawigacja">
+    <aside class="sidebar" aria-label="Navigation">
         <div class="brand">
             <div class="brand-mark" aria-hidden="true">
                 <span></span>
             </div>
             <div>
                 <strong>Pokemon Rental</strong>
-                <small>Panel wypozyczalni</small>
+                <small>Rental dashboard</small>
             </div>
         </div>
 
-        <nav class="tabs" aria-label="Sekcje">
-            <button class="tab active" type="button" data-view="pokemons">Pokemony</button>
-            <button class="tab" type="button" data-view="trainers">Trenerzy</button>
-            <button class="tab" type="button" data-view="rentals">Wypozyczenia</button>
+        <nav class="tabs" aria-label="Sections">
+            <button class="tab active" type="button" data-view="pokemons">Pokemon</button>
+            <button class="tab" type="button" data-view="trainers">Trainers</button>
+            <button class="tab" type="button" data-view="rentals">Rentals</button>
         </nav>
 
-        <section class="quick-stats" aria-label="Statystyki">
+        <section class="quick-stats" aria-label="Statistics">
             <div>
                 <span id="stat-pokemons">0</span>
-                <small>Pokemonow</small>
+                <small>Pokemon</small>
             </div>
             <div>
                 <span id="stat-available">0</span>
-                <small>Dostepnych</small>
+                <small>Available</small>
             </div>
             <div>
                 <span id="stat-active">0</span>
-                <small>Aktywnych wyp.</small>
+                <small>Active rentals</small>
             </div>
         </section>
     </aside>
@@ -44,14 +44,14 @@
     <main class="workspace">
         <header class="topbar">
             <div>
-                <p class="eyebrow">REST API do zarzadzania wypozyczalnia</p>
-                <h1 id="view-title">Pokemony</h1>
+                <p class="eyebrow">REST API for rental management</p>
+                <h1 id="view-title">Pokemon</h1>
             </div>
             <div class="topbar-actions">
-                <button class="icon-button" type="button" id="refresh-button" title="Odswiez dane" aria-label="Odswiez dane">
+                <button class="icon-button" type="button" id="refresh-button" title="Refresh data" aria-label="Refresh data">
                     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 0 0-14.6-4.5L3 9m0 0V3m0 6h6M4 13a8 8 0 0 0 14.6 4.5L21 15m0 0v6m0-6h-6"/></svg>
                 </button>
-                <button class="primary-button" type="button" id="primary-action">Dodaj Pokemona</button>
+                <button class="primary-button" type="button" id="primary-action">Add Pokemon</button>
             </div>
         </header>
 
@@ -60,27 +60,27 @@
         <section class="view active" id="view-pokemons" aria-labelledby="pokemon-heading">
             <div class="section-head">
                 <div>
-                    <h2 id="pokemon-heading">Katalog Pokemonow</h2>
-                    <p>Filtruj zasoby i wykonuj akcje zgodne ze statusem Pokemona.</p>
+                    <h2 id="pokemon-heading">Pokemon Catalog</h2>
+                    <p>Filter resources and run actions based on Pokemon status.</p>
                 </div>
             </div>
 
             <form class="filters" id="pokemon-filters">
                 <label>
-                    Nazwa
-                    <input name="name" type="search" placeholder="np. Pikachu">
+                    Name
+                    <input name="name" type="search" placeholder="e.g. Pikachu">
                 </label>
                 <label>
-                    Typ
-                    <input name="type" type="search" placeholder="np. Electric">
+                    Type
+                    <input name="type" type="search" placeholder="e.g. Electric">
                 </label>
                 <label>
                     Status
                     <select name="status">
-                        <option value="">Wszystkie</option>
-                        <option value="AVAILABLE">Dostepny</option>
-                        <option value="RENTED">Wypozyczony</option>
-                        <option value="INJURED">Kontuzjowany</option>
+                        <option value="">All</option>
+                        <option value="AVAILABLE">Available</option>
+                        <option value="RENTED">Rented</option>
+                        <option value="INJURED">Injured</option>
                     </select>
                 </label>
                 <label>
@@ -99,8 +99,8 @@
                     Max HP
                     <input name="maxHp" type="number" min="1">
                 </label>
-                <button class="secondary-button" type="submit">Filtruj</button>
-                <button class="ghost-button" type="button" id="clear-pokemon-filters">Wyczysc</button>
+                <button class="secondary-button" type="submit">Filter</button>
+                <button class="ghost-button" type="button" id="clear-pokemon-filters">Clear</button>
             </form>
 
             <div class="table-wrap">
@@ -108,12 +108,12 @@
                     <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Nazwa</th>
-                        <th>Typ</th>
+                        <th>Name</th>
+                        <th>Type</th>
                         <th>Level</th>
                         <th>HP</th>
                         <th>Status</th>
-                        <th>Akcje</th>
+                        <th>Actions</th>
                     </tr>
                     </thead>
                     <tbody id="pokemon-rows"></tbody>
@@ -124,8 +124,8 @@
         <section class="view" id="view-trainers" aria-labelledby="trainer-heading">
             <div class="section-head">
                 <div>
-                    <h2 id="trainer-heading">Trenerzy</h2>
-                    <p>Zarzadzaj osobami, ktore moga wypozyczac Pokemonow.</p>
+                    <h2 id="trainer-heading">Trainers</h2>
+                    <p>Manage the people who can rent Pokemon.</p>
                 </div>
             </div>
             <div class="table-wrap">
@@ -133,10 +133,10 @@
                     <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Imie</th>
-                        <th>Nazwisko</th>
+                        <th>First name</th>
+                        <th>Last name</th>
                         <th>Email</th>
-                        <th>Akcje</th>
+                        <th>Actions</th>
                     </tr>
                     </thead>
                     <tbody id="trainer-rows"></tbody>
@@ -147,16 +147,16 @@
         <section class="view" id="view-rentals" aria-labelledby="rental-heading">
             <div class="section-head">
                 <div>
-                    <h2 id="rental-heading">Wypozyczenia</h2>
-                    <p>Tworz wypozyczenia, przyjmuj zwroty i anuluj aktywne wpisy.</p>
+                    <h2 id="rental-heading">Rentals</h2>
+                    <p>Create rentals, process returns, and cancel active records.</p>
                 </div>
                 <label class="compact-filter">
                     Status
                     <select id="rental-status-filter">
-                        <option value="">Wszystkie</option>
-                        <option value="ACTIVE">Aktywne</option>
-                        <option value="RETURNED">Zwrocone</option>
-                        <option value="CANCELLED">Anulowane</option>
+                        <option value="">All</option>
+                        <option value="ACTIVE">Active</option>
+                        <option value="RETURNED">Returned</option>
+                        <option value="CANCELLED">Cancelled</option>
                     </select>
                 </label>
             </div>
@@ -167,11 +167,11 @@
                     <tr>
                         <th>ID</th>
                         <th>Pokemon</th>
-                        <th>Trener</th>
-                        <th>Wypozyczono</th>
-                        <th>Zwrocono</th>
+                        <th>Trainer</th>
+                        <th>Rented at</th>
+                        <th>Returned at</th>
                         <th>Status</th>
-                        <th>Akcje</th>
+                        <th>Actions</th>
                     </tr>
                     </thead>
                     <tbody id="rental-rows"></tbody>
@@ -184,15 +184,15 @@
 <dialog id="entity-dialog">
     <form method="dialog" class="dialog-panel" id="entity-form">
         <div class="dialog-head">
-            <h2 id="dialog-title">Formularz</h2>
-            <button class="icon-button" type="button" id="close-dialog" title="Zamknij" aria-label="Zamknij">
+            <h2 id="dialog-title">Form</h2>
+            <button class="icon-button" type="button" id="close-dialog" title="Close" aria-label="Close">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
             </button>
         </div>
         <div id="dialog-fields" class="dialog-fields"></div>
         <div class="dialog-actions">
-            <button class="ghost-button" type="button" id="cancel-dialog">Anuluj</button>
-            <button class="primary-button" type="submit" id="save-dialog">Zapisz</button>
+            <button class="ghost-button" type="button" id="cancel-dialog">Cancel</button>
+            <button class="primary-button" type="submit" id="save-dialog">Save</button>
         </div>
     </form>
 </dialog>

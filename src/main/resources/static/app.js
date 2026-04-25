@@ -13,12 +13,12 @@ const state = {
 const API_BASE_URL = resolveApiBaseUrl();
 
 const statusLabels = {
-    AVAILABLE: "Dostepny",
-    RENTED: "Wypozyczony",
-    INJURED: "Kontuzjowany",
-    ACTIVE: "Aktywne",
-    RETURNED: "Zwrocone",
-    CANCELLED: "Anulowane"
+    AVAILABLE: "Available",
+    RENTED: "Rented",
+    INJURED: "Injured",
+    ACTIVE: "Active",
+    RETURNED: "Returned",
+    CANCELLED: "Cancelled"
 };
 
 const els = {
@@ -109,14 +109,14 @@ function normalizeError(payload, status) {
     if (payload && typeof payload === "object") {
         return {
             status,
-            message: payload.message || "Nie udalo sie wykonac operacji",
+            message: payload.message || "The operation could not be completed",
             errors: payload.errors || {}
         };
     }
 
     return {
         status,
-        message: payload || "Nie udalo sie wykonac operacji",
+        message: payload || "The operation could not be completed",
         errors: {}
     };
 }
@@ -161,7 +161,7 @@ async function loadData() {
         state.allRentals = allRentals;
         render();
     } catch (error) {
-        showAlert(`${error.message}. Sprawdz, czy backend dziala pod adresem ${API_BASE_URL || window.location.origin}.`);
+        showAlert(`${error.message}. Check whether the backend is running at ${API_BASE_URL || window.location.origin}.`);
     }
 }
 
@@ -182,7 +182,7 @@ function renderStats() {
 function renderPokemons() {
     els.pokemonRows.innerHTML = "";
     if (!state.pokemons.length) {
-        els.pokemonRows.append(emptyRow(7, "Brak Pokemonow dla wybranych filtrow."));
+        els.pokemonRows.append(emptyRow(7, "No Pokemon match the selected filters."));
         return;
     }
 
@@ -199,9 +199,9 @@ function renderPokemons() {
         `;
         const actions = row.lastElementChild;
         actions.append(actionGroup([
-            actionButton("Edytuj", "ghost-button", () => openPokemonDialog(pokemon)),
-            pokemon.status === "INJURED" ? actionButton("Ulecz", "secondary-button", () => healPokemon(pokemon.id)) : null,
-            actionButton("Usun", "danger-button", () => deletePokemon(pokemon))
+            actionButton("Edit", "ghost-button", () => openPokemonDialog(pokemon)),
+            pokemon.status === "INJURED" ? actionButton("Heal", "secondary-button", () => healPokemon(pokemon.id)) : null,
+            actionButton("Delete", "danger-button", () => deletePokemon(pokemon))
         ]));
         els.pokemonRows.append(row);
     });
@@ -210,7 +210,7 @@ function renderPokemons() {
 function renderTrainers() {
     els.trainerRows.innerHTML = "";
     if (!state.trainers.length) {
-        els.trainerRows.append(emptyRow(5, "Brak trenerow."));
+        els.trainerRows.append(emptyRow(5, "No trainers found."));
         return;
     }
 
@@ -225,8 +225,8 @@ function renderTrainers() {
         `;
         const actions = row.lastElementChild;
         actions.append(actionGroup([
-            actionButton("Edytuj", "ghost-button", () => openTrainerDialog(trainer)),
-            actionButton("Usun", "danger-button", () => deleteTrainer(trainer))
+            actionButton("Edit", "ghost-button", () => openTrainerDialog(trainer)),
+            actionButton("Delete", "danger-button", () => deleteTrainer(trainer))
         ]));
         els.trainerRows.append(row);
     });
@@ -235,7 +235,7 @@ function renderTrainers() {
 function renderRentals() {
     els.rentalRows.innerHTML = "";
     if (!state.rentals.length) {
-        els.rentalRows.append(emptyRow(7, "Brak wypozyczen."));
+        els.rentalRows.append(emptyRow(7, "No rentals found."));
         return;
     }
 
@@ -255,10 +255,10 @@ function renderRentals() {
         const actions = row.lastElementChild;
         const availableActions = rental.status === "ACTIVE"
             ? [
-                actionButton("Zwroc", "secondary-button", () => openReturnDialog(rental)),
-                actionButton("Anuluj", "danger-button", () => cancelRental(rental))
+                actionButton("Return", "secondary-button", () => openReturnDialog(rental)),
+                actionButton("Cancel", "danger-button", () => cancelRental(rental))
             ]
-            : [document.createTextNode("Zakonczone")];
+            : [document.createTextNode("Closed")];
         actions.append(actionGroup(availableActions));
         els.rentalRows.append(row);
     });
@@ -266,9 +266,9 @@ function renderRentals() {
 
 function updateViewChrome() {
     const labels = {
-        pokemons: ["Pokemony", "Dodaj Pokemona"],
-        trainers: ["Trenerzy", "Dodaj trenera"],
-        rentals: ["Wypozyczenia", "Nowe wypozyczenie"]
+        pokemons: ["Pokemon", "Add Pokemon"],
+        trainers: ["Trainers", "Add trainer"],
+        rentals: ["Rentals", "New rental"]
     };
     const [title, action] = labels[state.view];
     els.title.textContent = title;
@@ -306,11 +306,11 @@ function actionButton(label, className, onClick) {
 
 function openPokemonDialog(pokemon = null) {
     openDialog({
-        title: pokemon ? "Edytuj Pokemona" : "Dodaj Pokemona",
-        submitLabel: pokemon ? "Zapisz zmiany" : "Dodaj",
+        title: pokemon ? "Edit Pokemon" : "Add Pokemon",
+        submitLabel: pokemon ? "Save changes" : "Add",
         fields: [
-            field("name", "Nazwa", "text", pokemon?.name || "", { required: true }),
-            field("type", "Typ", "text", pokemon?.type || "", { required: true }),
+            field("name", "Name", "text", pokemon?.name || "", { required: true }),
+            field("type", "Type", "text", pokemon?.type || "", { required: true }),
             field("level", "Level", "number", pokemon?.level || 1, { min: 1, max: 100, required: true }),
             field("hp", "HP", "number", pokemon?.hp || 1, { min: 1, required: true })
         ],
@@ -332,11 +332,11 @@ function openPokemonDialog(pokemon = null) {
 
 function openTrainerDialog(trainer = null) {
     openDialog({
-        title: trainer ? "Edytuj trenera" : "Dodaj trenera",
-        submitLabel: trainer ? "Zapisz zmiany" : "Dodaj",
+        title: trainer ? "Edit trainer" : "Add trainer",
+        submitLabel: trainer ? "Save changes" : "Add",
         fields: [
-            field("firstName", "Imie", "text", trainer?.firstName || "", { required: true }),
-            field("lastName", "Nazwisko", "text", trainer?.lastName || "", { required: true }),
+            field("firstName", "First name", "text", trainer?.firstName || "", { required: true }),
+            field("lastName", "Last name", "text", trainer?.lastName || "", { required: true }),
             field("email", "Email", "email", trainer?.email || "", { required: true })
         ],
         onSubmit: async (values) => {
@@ -352,14 +352,14 @@ function openTrainerDialog(trainer = null) {
 function openRentalDialog() {
     const availablePokemons = state.allPokemons.filter((pokemon) => pokemon.status === "AVAILABLE");
     openDialog({
-        title: "Nowe wypozyczenie",
-        submitLabel: "Wypozycz",
+        title: "New rental",
+        submitLabel: "Rent",
         fields: [
             selectField("pokemonId", "Pokemon", availablePokemons.map((pokemon) => ({
                 value: pokemon.id,
                 label: `${pokemon.name} (${pokemon.type}, lvl ${pokemon.level})`
             }))),
-            selectField("trainerId", "Trener", state.trainers.map((trainer) => ({
+            selectField("trainerId", "Trainer", state.trainers.map((trainer) => ({
                 value: trainer.id,
                 label: `${trainer.firstName} ${trainer.lastName}`
             })))
@@ -376,12 +376,12 @@ function openRentalDialog() {
 function openReturnDialog(rental) {
     const pokemon = findPokemon(rental.pokemonId);
     openDialog({
-        title: `Zwrot: ${pokemon ? pokemon.name : `#${rental.pokemonId}`}`,
-        submitLabel: "Przyjmij zwrot",
+        title: `Return: ${pokemon ? pokemon.name : `#${rental.pokemonId}`}`,
+        submitLabel: "Process return",
         fields: [
-            selectField("injured", "Czy Pokemon wrocil kontuzjowany?", [
-                { value: "false", label: "Nie, jest gotowy do kolejnej walki" },
-                { value: "true", label: "Tak, wymaga leczenia" }
+            selectField("injured", "Did the Pokemon return injured?", [
+                { value: "false", label: "No, it is ready for another battle" },
+                { value: "true", label: "Yes, it needs healing" }
             ])
         ],
         onSubmit: async (values) => {
@@ -417,7 +417,7 @@ function openDialog(config) {
             if (!item.options.length) {
                 const option = document.createElement("option");
                 option.value = "";
-                option.textContent = "Brak dostepnych opcji";
+                option.textContent = "No options available";
                 select.append(option);
                 select.disabled = true;
             } else {
@@ -500,21 +500,21 @@ async function healPokemon(id) {
 }
 
 async function deletePokemon(pokemon) {
-    if (!confirm(`Usunac Pokemona ${pokemon.name}?`)) {
+    if (!confirm(`Delete Pokemon ${pokemon.name}?`)) {
         return;
     }
     await runAction(() => api.delete(`/api/pokemons/${pokemon.id}`));
 }
 
 async function deleteTrainer(trainer) {
-    if (!confirm(`Usunac trenera ${trainer.firstName} ${trainer.lastName}?`)) {
+    if (!confirm(`Delete trainer ${trainer.firstName} ${trainer.lastName}?`)) {
         return;
     }
     await runAction(() => api.delete(`/api/trainers/${trainer.id}`));
 }
 
 async function cancelRental(rental) {
-    if (!confirm(`Anulowac wypozyczenie #${rental.id}?`)) {
+    if (!confirm(`Cancel rental #${rental.id}?`)) {
         return;
     }
     await runAction(() => api.patch(`/api/rentals/${rental.id}/cancel`));
@@ -542,7 +542,7 @@ function formatDate(value) {
     if (!value) {
         return "-";
     }
-    return new Intl.DateTimeFormat("pl-PL", {
+    return new Intl.DateTimeFormat("en-US", {
         dateStyle: "short",
         timeStyle: "short"
     }).format(new Date(value));
