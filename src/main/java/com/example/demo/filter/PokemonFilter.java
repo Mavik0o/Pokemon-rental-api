@@ -1,10 +1,12 @@
 package com.example.demo.filter;
 
 import com.example.demo.enums.PokemonStatus;
+import com.example.demo.validation.ValidPokemonFilter;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 
+@ValidPokemonFilter
 public record PokemonFilter(Long id,
                             @Nullable
                             String name,
